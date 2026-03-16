@@ -1,9 +1,8 @@
-# 简化版工作流（纯静态项目）
-name: Deploy to GitHub Pages
+name: Deploy login.html to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: ["main"]  # 触发分支，根据你的分支名修改（如master）
 
 permissions:
   contents: write
@@ -17,8 +16,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 步骤2：创建 index.html 重定向到 login.html（核心！解决主页问题）
+      - name: Create redirect index.html
+        run: |
+          echo '<!DOCTYPE html><meta http-equiv="Refresh" content="0; url=./login.html">' > index.html
+
+      # 步骤3：部署到 GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./  # 静态文件在根目录
+          publish_dir: ./  # 静态文件根目录（包含 login.html）
